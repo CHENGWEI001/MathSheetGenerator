@@ -1,135 +1,207 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Sheet Generator</title>
-    <style>
-        body {
-            font-family: sans-serif;
-        }
-        #mathSheet {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
-            width: 210mm; /* A4 width */
-            height: 297mm; /* A4 height */
-            margin: 0 auto;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .problem-section {
-            margin-bottom: 0px;
-        }
-        .problem {
-            margin-right: 0px;
-            display: block;
-            width: 100%; /* Adjust width as needed */
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        @media print {
-            .no-print {
-                display: none;
-            }
-            #mathSheet {
-                width: 100%;
-                height: 100%;
-                border: none;
-                margin: 0;
-                padding: 0;
-            }
-        }
-    </style>
+<title>Math Practice Sheet</title>
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  table {
+    width: 95%; /* Adjust width for A4 */
+    border-collapse: collapse;
+    margin: 10px auto; /* Adjust margins for A4 */
+  }
+  th, td {
+    border: 1px solid black;
+    padding: 8px; /* Adjust padding for A4 */
+    text-align: left;
+    vertical-align: top;
+    font-size: 14px; /* Adjust font size for A4 */
+  }
+  .problem {
+    margin-bottom: 8px; /* Adjust spacing for A4 */
+  }
+  @media print {
+    body {
+      font-size: 12pt;
+    }
+    table {
+      width: 100%;
+    }
+    th, td {
+      padding: 6px;
+      font-size: 11pt;
+    }
+    .problem {
+      margin-bottom: 6px;
+    }
+  }
+  .no-print {
+    margin: 10px auto;
+    text-align: center;
+  }
+  .no-print button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 10px;
+  }
+  .input-group {
+    margin-bottom: 10px;
+  }
+  .input-group label {
+    display: inline-block;
+    width: 150px;
+    text-align: right;
+    margin-right: 10px;
+  }
+  .input-group input {
+    padding: 5px;
+    font-size: 14px;
+  }
+  @media print {
+    .no-print {
+      display: none;
+    }
+    body {
+      font-size: 12pt;
+    }
+    table {
+      width: 100%;
+    }
+    th, td {
+      padding: 6px;
+      font-size: 11pt;
+    }
+    .problem {
+      margin-bottom: 6px;
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="no-print">
-        <h1>Math Sheet Generator</h1>
-        <button onclick="generateMathSheet()">Generate New Sheet</button>
-        <button onclick="window.print()">Print Sheet</button>
+
+  <div class="no-print">
+    <div class="input-group no-print">
+      <label for="additionMaxValue">Addition Max Value:</label>
+      <input type="number" id="additionMaxValue" value="1000">
     </div>
+    <div class="input-group no-print">
+      <label for="subtractionMaxValue">Subtraction Max Value:</label>
+      <input type="number" id="subtractionMaxValue" value="1000">
+    </div>
+    <div class="input-group no-print">
+      <label for="multiplicationMaxFactor">Multiplication Max Factor:</label>
+      <input type="number" id="multiplicationMaxFactor" value="10">
+    </div>
+    <div class="input-group no-print">
+      <label for="divisionMaxFactor">Division Max Factor:</label>
+      <input type="number" id="divisionMaxFactor" value="10">
+    </div>
+    <button onclick="generateMathSheet()">Generate New Sheet</button>
+    <button onclick="window.print()">Print Sheet</button>
+  </div>
 
-    <div id="mathSheet">
+  <table>
+    <tr>
+      <th>Addition (Within <span id="additionMaxValueDisplay">1000</span>)</th>
+      <th>Subtraction (Within <span id="subtractionMaxValueDisplay">1000</span>)</th>
+    </tr>
+    <tr>
+      <td>
+        <div id="additionProblems">
+          <!-- Addition problems will be generated here -->
         </div>
+      </td>
+      <td>
+        <div id="subtractionProblems">
+          <!-- Subtraction problems will be generated here -->
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th>Multiplication (Basic Tables, Max <span id="multiplicationMaxFactorDisplay">10</span>)</th>
+      <th>Division (Related to Multiplication Tables, Max <span id="divisionMaxFactorDisplay">10</span>)</th>
+    </tr>
+    <tr>
+      <td>
+        <div id="multiplicationProblems">
+          <!-- Multiplication problems will be generated here -->
+        </div>
+      </td>
+      <td>
+        <div id="divisionProblems">
+          <!-- Division problems will be generated here -->
+        </div>
+      </td>
+    </tr>
+  </table>
 
-    <script>
-        function generateRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+  <script>
+    function generateRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
-        function generateAdditionProblems(numProblems = 15, maxValue = 1000) {
-            let problems = [];
-            for (let i = 0; i < numProblems; i++) {
-                let num1 = generateRandomInt(1, maxValue);
-                let num2 = generateRandomInt(1, maxValue - num1);
-                problems.push(`${num1} + ${num2} = _____`);
-            }
-            return problems;
-        }
+    function generateAdditionProblems(numProblems = 15, maxValue) {
+      let problems = [];
+      for (let i = 0; i < numProblems; i++) {
+        let num1 = generateRandomInt(1, maxValue);
+        let num2 = generateRandomInt(1, maxValue - num1);
+        problems.push(`<div class="problem">${i + 1}. ${num1} + ${num2} = _______</div>`);
+      }
+      return problems;
+    }
 
-        function generateSubtractionProblems(numProblems = 15, maxValue = 1000) {
-            let problems = [];
-            for (let i = 0; i < numProblems; i++) {
-                let num1 = generateRandomInt(1, maxValue);
-                let num2 = generateRandomInt(1, num1);
-                problems.push(`${num1} - ${num2} = _____`);
-            }
-            return problems;
-        }
+    function generateSubtractionProblems(numProblems = 15, maxValue) {
+      let problems = [];
+      for (let i = 0; i < numProblems; i++) {
+        let num1 = generateRandomInt(1, maxValue);
+        let num2 = generateRandomInt(1, num1);
+        problems.push(`<div class="problem">${i + 1}. ${num1} - ${num2} = _______</div>`);
+      }
+      return problems;
+    }
 
-        function generateMultiplicationProblems(numProblems = 15, maxFactor = 10) {
-            let problems = [];
-            for (let i = 0; i < numProblems; i++) {
-                let num1 = generateRandomInt(1, maxFactor);
-                let num2 = generateRandomInt(1, maxFactor);
-                problems.push(`${num1} × ${num2} = _____`);
-            }
-            return problems;
-        }
+    function generateMultiplicationProblems(numProblems = 15, maxFactor) {
+      let problems = [];
+      for (let i = 0; i < numProblems; i++) {
+        let num1 = generateRandomInt(1, maxFactor);
+        let num2 = generateRandomInt(1, maxFactor);
+        problems.push(`<div class="problem">${i + 1}. ${num1} × ${num2} = _______</div>`);
+      }
+      return problems;
+    }
 
-        function generateDivisionProblems(numProblems = 15, maxFactor = 10) {
-            let problems = [];
-            for (let i = 0; i < numProblems; i++) {
-                let num2 = generateRandomInt(1, maxFactor);
-                let product = generateRandomInt(1, maxFactor) * num2;
-                problems.push(`${product} ÷ ${num2} = _____`);
-            }
-            return problems;
-        }
+    function generateDivisionProblems(numProblems = 15, maxFactor) {
+      let problems = [];
+      for (let i = 0; i < numProblems; i++) {
+        let num2 = generateRandomInt(1, maxFactor);
+        let product = generateRandomInt(1, maxFactor) * num2;
+        problems.push(`<div class="problem">${i + 1}. ${product} ÷ ${num2} = _______</div>`);
+      }
+      return problems;
+    }
 
-        function generateMathSheet() {
-            const additionProblems = generateAdditionProblems();
-            const subtractionProblems = generateSubtractionProblems();
-            const multiplicationProblems = generateMultiplicationProblems();
-            const divisionProblems = generateDivisionProblems();
+    function generateMathSheet() {
+      const additionMaxValue = parseInt(document.getElementById("additionMaxValue").value);
+      const subtractionMaxValue = parseInt(document.getElementById("subtractionMaxValue").value);
+      const multiplicationMaxFactor = parseInt(document.getElementById("multiplicationMaxFactor").value);
+      const divisionMaxFactor = parseInt(document.getElementById("divisionMaxFactor").value);
 
-            document.getElementById("mathSheet").innerHTML = `
-                <div class="problem-section">
-                    <h2>Addition</h2>
-                    ${additionProblems.map(problem => `<div class="problem">${problem}</div>`).join('')}
-                </div>
-                <div class="problem-section">
-                    <h2>Subtraction</h2>
-                    ${subtractionProblems.map(problem => `<div class="problem">${problem}</div>`).join('')}
-                </div>
-                <div class="problem-section">
-                    <h2>Multiplication</h2>
-                    ${multiplicationProblems.map(problem => `<div class="problem">${problem}</div>`).join('')}
-                </div>
-                <div class="problem-section">
-                    <h2>Division</h2>
-                    ${divisionProblems.map(problem => `<div class="problem">${problem}</div>`).join('')}
-                </div>
-            `;
-        }
+      document.getElementById("additionMaxValueDisplay").innerText = additionMaxValue;
+      document.getElementById("subtractionMaxValueDisplay").innerText = subtractionMaxValue;
+      document.getElementById("multiplicationMaxFactorDisplay").innerText = multiplicationMaxFactor;
+      document.getElementById("divisionMaxFactorDisplay").innerText = divisionMaxFactor;
 
-        // Generate a sheet when the page loads
-        generateMathSheet();
-    </script>
+      document.getElementById("additionProblems").innerHTML = generateAdditionProblems(15, additionMaxValue).join('');
+      document.getElementById("subtractionProblems").innerHTML = generateSubtractionProblems(15, subtractionMaxValue).join('');
+      document.getElementById("multiplicationProblems").innerHTML = generateMultiplicationProblems(15, multiplicationMaxFactor).join('');
+      document.getElementById("divisionProblems").innerHTML = generateDivisionProblems(15, divisionMaxFactor).join('');
+    }
+
+    // Generate a sheet when the page loads
+    generateMathSheet();
+  </script>
+
 </body>
 </html>
