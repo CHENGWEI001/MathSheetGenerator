@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Sheet Generator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        #mathSheet {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px;
+            width: 210mm; /* A4 width */
+            height: 297mm; /* A4 height */
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .problem-section {
+            margin-bottom: 0px;
+        }
+        .problem {
+            margin-right: 0px;
+            display: block;
+            width: 100%; /* Adjust width as needed */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+            #mathSheet {
+                width: 100%;
+                height: 100%;
+                border: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <h1>Math Sheet Generator</h1>
+        <button onclick="generateMathSheet()">Generate New Sheet</button>
+        <button onclick="window.print()">Print Sheet</button>
+    </div>
+
+    <div id="mathSheet">
+        </div>
+
+    <script>
+        function generateRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateAdditionProblems(numProblems = 15, maxValue = 1000) {
+            let problems = [];
+            for (let i = 0; i < numProblems; i++) {
+                let num1 = generateRandomInt(1, maxValue);
+                let num2 = generateRandomInt(1, maxValue - num1);
+                problems.push(`${num1} + ${num2} = _____`);
+            }
+            return problems;
+        }
+
+        function generateSubtractionProblems(numProblems = 15, maxValue = 1000) {
+            let problems = [];
+            for (let i = 0; i < numProblems; i++) {
+                let num1 = generateRandomInt(1, maxValue);
+                let num2 = generateRandomInt(1, num1);
+                problems.push(`${num1} - ${num2} = _____`);
+            }
+            return problems;
+        }
+
+        function generateMultiplicationProblems(numProblems = 15, maxFactor = 10) {
+            let problems = [];
+            for (let i = 0; i < numProblems; i++) {
+                let num1 = generateRandomInt(1, maxFactor);
+                let num2 = generateRandomInt(1, maxFactor);
+                problems.push(`${num1} × ${num2} = _____`);
+            }
+            return problems;
+        }
+
+        function generateDivisionProblems(numProblems = 15, maxFactor = 10) {
+            let problems = [];
+            for (let i = 0; i < numProblems; i++) {
+                let num2 = generateRandomInt(1, maxFactor);
+                let product = generateRandomInt(1, maxFactor) * num2;
+                problems.push(`${product} ÷ ${num2} = _____`);
+            }
+            return problems;
+        }
+
+        function generateMathSheet() {
+            const additionProblems = generateAdditionProblems();
+            const subtractionProblems = generateSubtractionProblems();
+            const multiplicationProblems = generateMultiplicationProblems();
+            const divisionProblems = generateDivisionProblems();
+
+            document.getElementById("mathSheet").innerHTML = `
+                <div class="problem-section">
+                    <h2>Addition</h2>
+                    ${additionProblems.map(problem => `<div class="problem">${problem}</div>`).join('')}
+                </div>
+                <div class="problem-section">
+                    <h2>Subtraction</h2>
+                    ${subtractionProblems.map(problem => `<div class="problem">${problem}</div>`).join('')}
+                </div>
+                <div class="problem-section">
+                    <h2>Multiplication</h2>
+                    ${multiplicationProblems.map(problem => `<div class="problem">${problem}</div>`).join('')}
+                </div>
+                <div class="problem-section">
+                    <h2>Division</h2>
+                    ${divisionProblems.map(problem => `<div class="problem">${problem}</div>`).join('')}
+                </div>
+            `;
+        }
+
+        // Generate a sheet when the page loads
+        generateMathSheet();
+    </script>
+</body>
+</html>
