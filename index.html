@@ -83,20 +83,36 @@
 
   <div class="no-print">
     <div class="input-group no-print">
-      <label for="additionMaxValue">Addition Max Value:</label>
-      <input type="number" id="additionMaxValue" value="1000">
+      <label for="additionMax1">Addition Max 1:</label>
+      <input type="number" id="additionMax1" value="1000">
     </div>
     <div class="input-group no-print">
-      <label for="subtractionMaxValue">Subtraction Max Value:</label>
-      <input type="number" id="subtractionMaxValue" value="1000">
+      <label for="additionMax2">Addition Max 2:</label>
+      <input type="number" id="additionMax2" value="1000">
     </div>
     <div class="input-group no-print">
-      <label for="multiplicationMaxFactor">Multiplication Max Factor:</label>
-      <input type="number" id="multiplicationMaxFactor" value="10">
+      <label for="subtractionMax1">Subtraction Max 1:</label>
+      <input type="number" id="subtractionMax1" value="1000">
     </div>
     <div class="input-group no-print">
-      <label for="divisionMaxFactor">Division Max Factor:</label>
-      <input type="number" id="divisionMaxFactor" value="10">
+      <label for="subtractionMax2">Subtraction Max 2:</label>
+      <input type="number" id="subtractionMax2" value="1000">
+    </div>
+    <div class="input-group no-print">
+      <label for="multiplicationMax1">Multiplication Max 1:</label>
+      <input type="number" id="multiplicationMax1" value="10">
+    </div>
+    <div class="input-group no-print">
+      <label for="multiplicationMax2">Multiplication Max 2:</label>
+      <input type="number" id="multiplicationMax2" value="10">
+    </div>
+    <div class="input-group no-print">
+      <label for="divisionMax1">Division Max 1:</label>
+      <input type="number" id="divisionMax1" value="100">
+    </div>
+    <div class="input-group no-print">
+      <label for="divisionMax2">Division Max 2:</label>
+      <input type="number" id="divisionMax2" value="10">
     </div>
     <button onclick="generateMathSheet()">Generate New Sheet</button>
     <button onclick="window.print()">Print Sheet</button>
@@ -104,8 +120,8 @@
 
   <table>
     <tr>
-      <th>Addition (Within <span id="additionMaxValueDisplay">1000</span>)</th>
-      <th>Subtraction (Within <span id="subtractionMaxValueDisplay">1000</span>)</th>
+      <th>Addition (Max: <span id="additionMax1Display">1000</span>, <span id="additionMax2Display">1000</span>)</th>
+      <th>Subtraction (Max: <span id="subtractionMax1Display">1000</span>, <span id="subtractionMax2Display">1000</span>)</th>
     </tr>
     <tr>
       <td>
@@ -120,8 +136,8 @@
       </td>
     </tr>
     <tr>
-      <th>Multiplication (Basic Tables, Max <span id="multiplicationMaxFactorDisplay">10</span>)</th>
-      <th>Division (Related to Multiplication Tables, Max <span id="divisionMaxFactorDisplay">10</span>)</th>
+      <th>Multiplication (Max: <span id="multiplicationMax1Display">10</span>, <span id="multiplicationMax2Display">10</span>)</th>
+      <th>Division (Max: <span id="divisionMax1Display">10</span>, <span id="divisionMax2Display">10</span>)</th>
     </tr>
     <tr>
       <td>
@@ -142,64 +158,96 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function generateAdditionProblems(numProblems = 15, maxValue) {
+    function generateAdditionProblems(numProblems = 15, max1, max2) {
       let problems = [];
       for (let i = 0; i < numProblems; i++) {
-        let num1 = generateRandomInt(1, maxValue);
-        let num2 = generateRandomInt(1, maxValue - num1);
+        let num1 = generateRandomInt(1, max1);
+        let num2 = generateRandomInt(1, max2);
         problems.push(`<div class="problem">${i + 1}. ${num1} + ${num2} = _______</div>`);
       }
       return problems;
     }
 
-    function generateSubtractionProblems(numProblems = 15, maxValue) {
+    function generateSubtractionProblems(numProblems = 15, max1, max2) {
       let problems = [];
       for (let i = 0; i < numProblems; i++) {
-        let num1 = generateRandomInt(1, maxValue);
-        let num2 = generateRandomInt(1, num1);
+        let num1 = generateRandomInt(1, max1);
+        let num2 = generateRandomInt(1, max2);
+        if (num1 < num2) {
+          [num1, num2] = [num2, num1]; // Swap them
+        }
         problems.push(`<div class="problem">${i + 1}. ${num1} - ${num2} = _______</div>`);
       }
       return problems;
     }
 
-    function generateMultiplicationProblems(numProblems = 15, maxFactor) {
+    function generateMultiplicationProblems(numProblems = 15, max1, max2) {
       let problems = [];
       for (let i = 0; i < numProblems; i++) {
-        let num1 = generateRandomInt(1, maxFactor);
-        let num2 = generateRandomInt(1, maxFactor);
+        let num1 = generateRandomInt(1, max1);
+        let num2 = generateRandomInt(1, max2);
         problems.push(`<div class="problem">${i + 1}. ${num1} × ${num2} = _______</div>`);
       }
       return problems;
     }
 
-    function generateDivisionProblems(numProblems = 15, maxFactor) {
+    function generateDivisionProblems(numProblems = 15, max1, max2) {
       let problems = [];
       for (let i = 0; i < numProblems; i++) {
-        let num2 = generateRandomInt(1, maxFactor);
-        let product = generateRandomInt(1, maxFactor) * num2;
-        problems.push(`<div class="problem">${i + 1}. ${product} ÷ ${num2} = _______</div>`);
+        let num1 = generateRandomInt(1, max1);
+        let num2 = generateRandomInt(1, max2);
+        if (num1 < num2) {
+          [num1, num2] = [num2, num1]; // Swap them
+        }
+        problems.push(`<div class="problem">${i + 1}. ${Math.floor(num1/num2)*num2} ÷ ${num2} = _______</div>`);
       }
       return problems;
     }
 
     function generateMathSheet() {
-      const additionMaxValue = parseInt(document.getElementById("additionMaxValue").value);
-      const subtractionMaxValue = parseInt(document.getElementById("subtractionMaxValue").value);
-      const multiplicationMaxFactor = parseInt(document.getElementById("multiplicationMaxFactor").value);
-      const divisionMaxFactor = parseInt(document.getElementById("divisionMaxFactor").value);
+      const additionMax1 = parseInt(document.getElementById("additionMax1").value);
+      const additionMax2 = parseInt(document.getElementById("additionMax2").value);
+      const subtractionMax1 = parseInt(document.getElementById("subtractionMax1").value);
+      const subtractionMax2 = parseInt(document.getElementById("subtractionMax2").value);
+      const multiplicationMax1 = parseInt(document.getElementById("multiplicationMax1").value);
+      const multiplicationMax2 = parseInt(document.getElementById("multiplicationMax2").value);
+      const divisionMax1 = parseInt(document.getElementById("divisionMax1").value);
+      const divisionMax2 = parseInt(document.getElementById("divisionMax2").value);
 
-      document.getElementById("additionMaxValueDisplay").innerText = additionMaxValue;
-      document.getElementById("subtractionMaxValueDisplay").innerText = subtractionMaxValue;
-      document.getElementById("multiplicationMaxFactorDisplay").innerText = multiplicationMaxFactor;
-      document.getElementById("divisionMaxFactorDisplay").innerText = divisionMaxFactor;
+      document.getElementById("additionMax1Display").innerText = additionMax1;
+      document.getElementById("additionMax2Display").innerText = additionMax2;
+      document.getElementById("subtractionMax1Display").innerText = subtractionMax1;
+      document.getElementById("subtractionMax2Display").innerText = subtractionMax2;
+      document.getElementById("multiplicationMax1Display").innerText = multiplicationMax1;
+      document.getElementById("multiplicationMax2Display").innerText = multiplicationMax2;
+      document.getElementById("divisionMax1Display").innerText = divisionMax1;
+      document.getElementById("divisionMax2Display").innerText = divisionMax2;
 
-      document.getElementById("additionProblems").innerHTML = generateAdditionProblems(15, additionMaxValue).join('');
-      document.getElementById("subtractionProblems").innerHTML = generateSubtractionProblems(15, subtractionMaxValue).join('');
-      document.getElementById("multiplicationProblems").innerHTML = generateMultiplicationProblems(15, multiplicationMaxFactor).join('');
-      document.getElementById("divisionProblems").innerHTML = generateDivisionProblems(15, divisionMaxFactor).join('');
+      document.getElementById("additionProblems").innerHTML = generateAdditionProblems(15, additionMax1, additionMax2).join('');
+      document.getElementById("subtractionProblems").innerHTML = generateSubtractionProblems(15, subtractionMax1, subtractionMax2).join('');
+      document.getElementById("multiplicationProblems").innerHTML = generateMultiplicationProblems(15, multiplicationMax1, multiplicationMax2).join('');
+      document.getElementById("divisionProblems").innerHTML = generateDivisionProblems(15, divisionMax1, divisionMax2).join('');
     }
 
     // Generate a sheet when the page loads
+    function setDefaultsFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const params = [
+        'additionMax1', 'additionMax2',
+        'subtractionMax1', 'subtractionMax2',
+        'multiplicationMax1', 'multiplicationMax2',
+        'divisionMax1', 'divisionMax2'
+      ];
+
+      params.forEach(param => {
+        if (urlParams.has(param)) {
+          document.getElementById(param).value = urlParams.get(param);
+        }
+      });
+    }
+
+    // Set defaults from URL parameters before generating the sheet
+    setDefaultsFromUrl();
     generateMathSheet();
   </script>
 
